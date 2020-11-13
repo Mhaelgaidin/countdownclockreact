@@ -1,12 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const EventForm = () => {
+const EventForm = ({ setEvent }) => {
+  const [validInput, setValidInput] = useState(true)
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    let newEvent = {
+      name: e.target.eventName.value,
+      date: new Date(e.target.eventDate.value + ' ' + e.target.eventTime.value),
+    }
+    if (validDate(newEvent.date)) {
+      setValidInput(true)
+      setEvent(newEvent)
+      e.target.reset()
+    } else {
+      setValidInput(false)
+    }
+  }
+
+  const validDate = (newDate) => {
+    let currentDate = new Date()
+    if (newDate < currentDate) {
+      return false
+    }
+    if (newDate <= currentDate && newDate.getTime() < currentDate.getTime()) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   return (
     <div>
-      <form action='' id='newEvent' autocomplete='off'>
+      <form onSubmit={submitHandler} autoComplete='off'>
         <h2>New Event</h2>
         <div>
-          <label for='eventName'> *Name:</label>
+          <label htmlFor='eventName'> *Name:</label>
           <input
             type='text'
             name='eventName'
@@ -16,18 +45,18 @@ const EventForm = () => {
           />
         </div>
         <div>
-          <label for='eventDate'>*Event Date:</label>
+          <label htmlFor='eventDate'>*Event Date:</label>
           <input type='date' name='eventDate' id='eventDate' required />
         </div>
         <div>
-          <label for='eventTime'>Event Time:</label>
+          <label htmlFor='eventTime'>Event Time:</label>
           <input type='time' name='eventTime' id='eventTime' />
         </div>
-        <p class='hidden' id='warning'>
-          Please Select a Date/Time in the future
-        </p>
+        {!validInput && (
+          <p id='warning'>Please Select a Date/Time in the future</p>
+        )}
         <button>
-          <i class='fas fa-plus'></i>
+          <i className='fas fa-plus'></i>
         </button>
       </form>
     </div>

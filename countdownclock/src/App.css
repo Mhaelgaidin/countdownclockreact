@@ -37,10 +37,6 @@ button:focus {
   border: 1px solid #ff0000;
 }
 
-.hidden {
-  display: none;
-}
-
 #eventList {
   width: 45vw;
 }
@@ -61,8 +57,7 @@ h2 {
 
 #eventList h1,
 #eventList h2,
-#eventList h3,
-#eventList h4 {
+#eventList h3 {
   text-decoration: underline #ff0000;
 }
 #eventList h3 {

@@ -1,29 +1,58 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-const Event = () => {
+const Event = ({ event, removeEvent, index }) => {
+  const handleDelete = () => {
+    removeEvent(index)
+  }
+
+  const countDown = () => {
+    let difference = new Date(event.date) - new Date()
+    let cd = { complete: true }
+    if (difference > 0) {
+      cd = {
+        Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        Mins: Math.floor((difference / 1000 / 60) % 60),
+        Secs: Math.floor((difference / 1000) % 60),
+        complete: false,
+      }
+    }
+    return cd
+  }
+
+  const [countdown, setCountdown] = useState(countDown())
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCountdown(countDown())
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  })
+
   return (
     <div>
-      <h3>Name</h3>
-      <div class='countdown'>
-        <div>
-          <h4>Days</h4>
-          <p>12</p>
+      <h3>{event.name}</h3>
+      {countdown.complete ? (
+        <p>Event Reached</p>
+      ) : (
+        <div className='countdown'>
+          {Object.entries(countdown).map(([key, value]) => {
+            if (key !== 'complete') {
+              return (
+                <div>
+                  <h4>{key}</h4>
+                  {value < 10 ? <p>0{value}</p> : <p>{value}</p>}
+                </div>
+              )
+            } else {
+              return <></>
+            }
+          })}
         </div>
-        <div>
-          <h4>Hours</h4>
-          <p>15</p>
-        </div>
-        <div>
-          <h4>Mins</h4>
-          <p>36</p>
-        </div>
-        <div>
-          <h4>Secs</h4>
-          <p>10</p>
-        </div>
-      </div>
-      <button onclick='remove(${index})'>
-        <i class='fas fa-trash'></i>
+      )}
+      <button onClick={handleDelete}>
+        <i className='fas fa-trash'></i>
       </button>
     </div>
   )
